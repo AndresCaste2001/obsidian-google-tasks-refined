@@ -1,5 +1,8 @@
+import { CreateTaskNoteModal } from "./modal/CreateTaskNoteModal";
+import { TaskSelectionModal } from "./modal/TaskSelectionModal";
 import { getRT } from './helper/LocalStorage';
 import { Editor, MarkdownView, Plugin, WorkspaceLeaf, moment, Notice, TFile } from "obsidian";
+import type { Task } from "./helper/types";
 import type { GoogleTasksSettings } from "./helper/types";
 import { getAllUncompletedTasksOrderdByDue, getOneTaskById } from "./googleApi/ListAllTasks";
 import {
@@ -89,7 +92,16 @@ export default class GoogleTasks extends Plugin {
 			}
 		})
 	}
+	// Add this method to the GoogleTasks class
 
+	async selectTaskAndCreateNote() {
+		const tasks = await getAllUncompletedTasksOrderdByDue(this);
+
+		// Reuse the existing TaskListModal pattern but with custom callback
+		new TaskSelectionModal(this, tasks, (task: Task) => {
+			new CreateTaskNoteModal(this, task).open();
+		}).open();
+	}
 	async onload() {
 		await this.loadSettings();
 		this.plugin = this;
@@ -253,6 +265,25 @@ export default class GoogleTasks extends Plugin {
 			},
 		});
 
+		// Create note from task command
+		this.addCommand({
+			id: "create-note-from-google-task",
+			name: "Create Note from Google Task",
+			checkCallback: (checking: boolean) => {
+				const canRun = settingsAreCompleteAndLoggedIn(this, false);
+
+				if (checking) {
+					return canRun;
+				}
+
+				if (!canRun) {
+					return;
+				}
+
+				// Show task selection modal, then create note modal
+				// this.selectTaskAndCreateNote();
+			},
+		});
 
 		//Copy Refresh token to clipboard
 		this.addCommand({

@@ -4,6 +4,7 @@
 	align-items: flex-start;
 	justify-content: flex-start;
 	padding-left: 10px;
+	container-type: inline-size;
 }
 
 .googleTaskAddButton {
@@ -45,7 +46,73 @@
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	align-items: center;
 	padding-right: 20px;
+	gap: 8px;
+}
+
+/* Fix setting-item padding in title container (applies in both layouts) */
+.googleTaskTitleContainer > .setting-item {
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+.googleTaskTitleContainer > .setting-item > .setting-item-info {
+	display: none;
+}
+
+@container (max-width: 355px) {
+	.googleTaskTitleContainer {
+		flex-direction: column;
+		align-items: stretch;
+		padding-right: 5px;
+		gap: 8px;
+	}
+	
+	.googleTaskTitleContainer > h4 {
+		text-align: center;
+		order: 1;
+		margin: 0;
+	}
+	
+	/* Fix the + button container */
+	.googleTaskTitleContainer > .setting-item:first-of-type {
+		order: 2;
+		display: flex;
+		justify-content: center;
+		width: auto;
+		align-self: center;
+	}
+	
+	/* Keep the button circular */
+	.googleTaskTitleContainer > .setting-item:first-of-type .googleTaskAddButton {
+		width: 30px !important;
+		height: 30px !important;
+		min-width: 30px;
+		max-width: 30px;
+		border-radius: 50%;
+	}
+	
+	.googleTaskTitleContainer > .setting-item:first-of-type > .setting-item-control {
+		width: auto;
+		justify-content: center;
+	}
+	
+	/* Style the dropdown container */
+	.googleTaskTitleContainer > .setting-item:last-of-type {
+		order: 3;
+		width: 100%;
+	}
+	
+	.googleTaskTitleContainer > .setting-item:last-of-type > .setting-item-control {
+		width: 100%;
+		justify-content: center;
+	}
+	
+	.googleTaskTitleContainer > .setting-item:last-of-type > .setting-item-control > select {
+		width: 100%;
+	}
 }
 
 .googleTaskContainer {
@@ -102,6 +169,34 @@
 
 .googleTaskTrash:hover > * {
 	color: red;
+}
+
+/* Create Note Button */
+.googleTaskCreateNote {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 2px 4px;
+    margin-right: 4px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.googleTaskCreateNote:hover {
+    opacity: 1;
+}
+
+.googleTaskContainer:hover .googleTaskCreateNote {
+    opacity: 0.8;
+}
+
+.task-note-preview {
+    color: var(--text-muted);
+    font-size: 0.9em;
+    margin-bottom: 1em;
+    padding: 0.5em;
+    background: var(--background-secondary);
+    border-radius: 4px;
 }
 
 .googleSubTaskContainer{

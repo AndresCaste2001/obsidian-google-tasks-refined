@@ -9,6 +9,7 @@ import {
 import TreeMap from "ts-treemap";
 import { ConfirmationModal } from "../modal/ConfirmationModal";
 import { CreateTaskModal } from "../modal/CreateTaskModal";
+import { CreateTaskNoteModal } from "../modal/CreateTaskNoteModal";
 import {
 	GoogleCompleteTask,
 	GoogleUnCompleteTask,
@@ -152,10 +153,22 @@ createTaskElement(task:Task, containerEl: HTMLElement, isUnDoneList: boolean, is
 		});
 	}
 
+	// Add "Create Note" button ONLY for uncompleted tasks
+	if (isUnDoneList && !isSubTaskList) {
+		const createNoteButton = new ButtonComponent(taskContainer);
+		createNoteButton.setClass("googleTaskCreateNote");
+		createNoteButton.setIcon("file-plus");
+		createNoteButton.setTooltip("Create note from task");
+		createNoteButton.onClick((event) => {
+			event.stopPropagation();
+			new CreateTaskNoteModal(this.plugin, task).open();
+		});
+	}
+
 	const checkBox = taskContainer.createEl("input", {
 		type: "checkbox",
 	});
-	if (!isUnDoneList || (isSubTaskList && task.completed) ) {
+	if (!isUnDoneList || (isSubTaskList && task.completed)) {
 		checkBox.checked = true;
 	}
 	checkBox.addEventListener("click", async (event) => {
